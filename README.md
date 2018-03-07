@@ -1,1 +1,1 @@
-HuffmanCompression
+hufmanncompression.HuffmanCompression

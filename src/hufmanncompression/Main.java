@@ -7,8 +7,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        String text = "Eerie eyes seen near lake.";
-        Tree tree = new Tree(text);
+        String text = "Blah blah blah";
+        Huffman tree = new Huffman(text, false);
     }
 
     /**

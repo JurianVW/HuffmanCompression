@@ -8,7 +8,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         String text = "Blah blah blah";
-        Huffman tree = new Huffman(text, false);
+        Huffman tree = new Huffman(text, false, "bytes.file");
     }
 
     /**

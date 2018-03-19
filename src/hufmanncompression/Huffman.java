@@ -1,19 +1,16 @@
 package hufmanncompression;
 
-import oracle.jrockit.jfr.events.Bits;
-
 import java.io.*;
 import java.util.*;
 
-//Write in file: First few bytes say size of tree, then give the tree, then de text
-//https://algs4.cs.princeton.edu/55compression/Huffman.java.html
 public class Huffman {
 
-    private Node tree;
-    private BitSet data;
     private String fileDest = "bytes.file";
 
-    public Huffman(String text, boolean encode) {
+    public Node outputTree;
+
+    public Huffman(String text, boolean encode, String filename) {
+        fileDest = filename;
         if (encode) encode(text);
         else decode();
     }
@@ -23,22 +20,21 @@ public class Huffman {
         Node root = createTree(input);
         printTree(root);
 
-        HashMap<Character, String> map = new HashMap();
+        HashMap<Character, String> map = new HashMap<>();
         generateBinaryCodes(map, root, "");
 
         writeFile(generateCode(input, map), root);
     }
 
     private void decode() {
-        readFile();
+        BitSet data = readFile();
 
-        if (tree != null && data != null) {
-            System.out.println(decodeData());
+        if (outputTree != null && data != null) {
+            System.out.println(decodeData(data, outputTree));
         }
     }
 
-
-    private Node createTree(char[] input) {
+    public Node createTree(char[] input) {
         PriorityQueue<Node> queue = new PriorityQueue<>();
         for (char c : input) {
             boolean exists = false;
@@ -68,7 +64,7 @@ public class Huffman {
 
     //Vraag 4a: Dit is erg snel en je hoeft niks op te zoeken, je loopt langs elke node maar 1 keer dus het is erg snel en kost niet veel geheugen om te doen.
     //Vraag 4b: Dit is slomer om te doen, zeker bij een lange text is het opzoeken in een boom van een value erg zwaar.
-    private void generateBinaryCodes(HashMap map, Node node, String s) {
+    public void generateBinaryCodes(Map<Character, String> map, Node node, String s) {
         if (!node.isLeaf()) {
             generateBinaryCodes(map, node.myLeft, s + '0');
             generateBinaryCodes(map, node.myRight, s + '1');
@@ -77,7 +73,7 @@ public class Huffman {
         }
     }
 
-    private BitSet generateCode(char[] input, HashMap<Character, String> map) {
+    public BitSet generateCode(char[] input, Map<Character, String> map) {
         BitSet bitset = new BitSet();
         Integer index = 0;
 
@@ -96,7 +92,7 @@ public class Huffman {
         return bitset;
     }
 
-    private String decodeData() {
+    public String decodeData(BitSet data, Node tree) {
         StringBuilder sb = new StringBuilder();
         Node current = tree;
 
@@ -115,7 +111,7 @@ public class Huffman {
         return sb.toString();
     }
 
-    private void writeFile(BitSet bitset, Node tree) {
+    public void writeFile(BitSet bitset, Node tree) {
         try (FileOutputStream fos = new FileOutputStream(fileDest); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(tree);
             oos.writeObject(bitset.toByteArray());
@@ -123,12 +119,13 @@ public class Huffman {
         }
     }
 
-    private void readFile() {
+    public BitSet readFile() {
         try (FileInputStream fis = new FileInputStream(fileDest); ObjectInputStream ois = new ObjectInputStream(fis)) {
-            tree = (Node) ois.readObject();
-            data = BitSet.valueOf((byte[]) ois.readObject());
+            outputTree = (Node) ois.readObject();
+            return BitSet.valueOf((byte[]) ois.readObject());
         } catch (Exception ex) {
         }
+        return null;
     }
 
     private void printTree(Node node) {

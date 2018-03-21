@@ -5,11 +5,11 @@ import java.util.*;
 
 public class Huffman {
 
-    private String fileDest = "bytes.file";
+    private String fileDest;
 
     public Node outputTree;
 
-    public Huffman(String text, boolean encode, String filename) {
+    Huffman(String text, boolean encode, String filename) {
         fileDest = filename;
         if (encode) encode(text);
         else decode();
@@ -64,6 +64,8 @@ public class Huffman {
 
     //Vraag 4a: Dit is erg snel en je hoeft niks op te zoeken, je loopt langs elke node maar 1 keer dus het is erg snel en kost niet veel geheugen om te doen.
     //Vraag 4b: Dit is slomer om te doen, zeker bij een lange text is het opzoeken in een boom van een value erg zwaar.
+
+    //I tried to use a bitset, but after trying some different things I gave up because it didnt work.
     public void generateBinaryCodes(Map<Character, String> map, Node node, String s) {
         if (!node.isLeaf()) {
             generateBinaryCodes(map, node.myLeft, s + '0');

@@ -29,11 +29,12 @@ public class Node implements Serializable, Comparable<Node> {
 
     @Override
     public int compareTo(Node o) {
-        if (this.myFrequency > o.myFrequency) {
+    return Integer.compare(o.myFrequency, this.myFrequency);
+       /* if (this.myFrequency > o.myFrequency) {
             return 1;
         } else if (this.myFrequency < o.myFrequency) {
             return -1;
         }
-        return 0;
+        return 0;*/
     }
 }
